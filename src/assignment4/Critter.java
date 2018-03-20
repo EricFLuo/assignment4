@@ -130,6 +130,83 @@ public abstract class Critter {
 	}
 	
 	protected final void reproduce(Critter offspring, int direction) {
+		if(energy >= Params.min_reproduce_energy) {
+			offspring.energy = (energy/2);
+			if(energy%2 == 1) {
+				energy++;
+			}
+			energy = (energy/2);
+			switch(direction) {
+			case 0:
+				offspring.x_coord = (offspring.x_coord+1) % Params.world_width;
+				break;
+				
+			case 1:
+				offspring.x_coord = (offspring.x_coord+1) % Params.world_width;
+				if(y_coord == 0) {
+					offspring.y_coord = Params.world_height-1;
+				}
+				else {
+					offspring.y_coord--;
+				}
+				break;
+				
+			case 2:
+				if(y_coord == 0) {
+					offspring.y_coord = Params.world_height-1;
+				}
+				else {
+					offspring.y_coord--;
+				}
+				break;
+				
+			case 3:
+				if(x_coord == 0) {
+					offspring.x_coord = Params.world_width-1;
+				}
+				else { 
+					offspring.x_coord--;
+				}
+				
+				if(y_coord == 0) {
+					offspring.y_coord = Params.world_height-1;
+				}
+				else {
+					offspring.y_coord--;
+				}
+				break;
+				
+			case 4:
+				if(x_coord == 0) {
+					offspring.x_coord = Params.world_width-1;
+				}
+				else { 
+					offspring.x_coord--;
+				}
+				
+				break;
+				
+			case 5:
+				if(x_coord == 0) {
+					offspring.x_coord = Params.world_width-1;
+				}
+				else { 
+					offspring.x_coord--;
+				}
+				offspring.y_coord = (offspring.y_coord+1) % Params.world_height;
+				break;
+				
+			case 6:
+				offspring.y_coord = (offspring.y_coord+1) % Params.world_height;
+				break;
+				
+			case 7:
+				offspring.x_coord = (offspring.x_coord+1) % Params.world_width;
+				offspring.y_coord = (offspring.y_coord+1) % Params.world_height;
+			}
+			babies.add(offspring);
+		}
+		return;
 	}
 
 	public abstract void doTimeStep();
@@ -283,15 +360,54 @@ public abstract class Critter {
 				p--;
 			}
 		}
-		for (int p = 0; p < population.size(); p++) {
-			int check_x = population.get(p).x_coord;
-			int check_y = population.get(p).y_coord;
-			for (int q = p+1; q < population.size(); q++) {
-				if(check_x == population.get(q).x_coord && check_y == population.get(q).y_coord) {
+		for (int a = 0; a < population.size()-1; a++) {
+			int check_x = population.get(a).x_coord;
+			int check_y = population.get(a).y_coord;
+			
+			for (int b = a+1; b < population.size()-1; b++) {
+				
+				if(check_x == population.get(b).x_coord && check_y == population.get(b).y_coord) {
 					
+					boolean A_fight = population.get(a).fight(population.get(b).toString());
+					boolean B_fight = population.get(b).fight(population.get(a).toString());
+					
+					//This means they both haven't or can't flee
+					if(check_x == population.get(b).x_coord && check_y == population.get(b).y_coord) {
+						int A_roll = 0;
+						int B_roll = 0;
+						if(A_fight) {
+							A_roll = getRandomInt(population.get(a).energy);
+						}
+						if(B_fight) {
+							B_roll = getRandomInt(population.get(b).energy);
+						}
+						//A = B
+						if(A_roll == B_roll) {
+							population.get(a).energy += (population.get(b).energy/2);
+							population.remove(b);
+							a--;
+							b--;
+						}
+						//A < B
+						else if(A_roll < B_roll) {
+							population.get(b).energy += (population.get(a).energy/2);
+							population.remove(a);
+							a--;
+							b--;
+						}
+						//A > B
+						else {
+							population.get(a).energy += (population.get(b).energy/2);
+							population.remove(b);
+							a--;
+							b--;
+						}
+					}
 				}
 			}
 		}
+		population.addAll(babies);
+		babies.clear();
 	//Algae refresh time
 		for(int i = 0 ; i < Params.refresh_algae_count; i ++) {
 			Critter temp = new Algae();

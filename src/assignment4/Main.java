@@ -101,11 +101,20 @@ public class Main {
         		break;
         		
         	case "make": //STAGE 1/2 NEED TO UPGRADE FOR STAGE 3
-        		for(int i = 0; i < 100 ; i ++) {
-        			Critter.makeCritter("assignment4.Algae");
+//        		for(int i = 0; i < 100 ; i ++) {
+//        			Critter.makeCritter("assignment4.Algae");
+//        		}
+//        		for(int i = 0; i < 25 ; i ++) {
+//        			Critter.makeCritter("assignment4.Craig");
+//        		}
+        		String class_name = kb.next();
+        		int amount = 1;
+        		if(kb.hasNextInt()	) {
+        			amount = kb.nextInt();
         		}
-        		for(int i = 0; i < 25 ; i ++) {
-        			Critter.makeCritter("assignment4.Craig");
+        		class_name = "assignment4."+ class_name;
+        		for(int i = 0; i < amount; i++) {
+        			Critter.makeCritter(class_name);
         		}
         		break;
         		
