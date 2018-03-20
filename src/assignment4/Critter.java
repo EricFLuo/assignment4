@@ -51,28 +51,82 @@ public abstract class Critter {
 	private int y_coord;
 	
 	protected final void walk(int direction) {
+		energy -= Params.walk_energy_cost;
 		switch(direction) {
 		case 0:
+			x_coord = (x_coord+1) % Params.world_width;
 			break;
-		case 1:
-			break;
-		case 2:
-			break;
-		case 3:
-			break;
-		case 4:
-			break;
-		case 5:
-			break;
-		case 6:
-			break;
-		case 7:
 			
+		case 1:
+			x_coord = (x_coord+1) % Params.world_width;
+			if(y_coord == 0) {
+				y_coord = Params.world_height-1;
+			}
+			else {
+				y_coord--;
+			}
+			break;
+			
+		case 2:
+			if(y_coord == 0) {
+				y_coord = Params.world_height-1;
+			}
+			else {
+				y_coord--;
+			}
+			break;
+			
+		case 3:
+			if(x_coord == 0) {
+				x_coord = Params.world_width-1;
+			}
+			else { 
+				x_coord--;
+			}
+			
+			if(y_coord == 0) {
+				y_coord = Params.world_height-1;
+			}
+			else {
+				y_coord--;
+			}
+			break;
+			
+		case 4:
+			if(x_coord == 0) {
+				x_coord = Params.world_width-1;
+			}
+			else { 
+				x_coord--;
+			}
+			
+			break;
+			
+		case 5:
+			if(x_coord == 0) {
+				x_coord = Params.world_width-1;
+			}
+			else { 
+				x_coord--;
+			}
+			y_coord = (y_coord+1) % Params.world_height;
+			break;
+			
+		case 6:
+			y_coord = (y_coord+1) % Params.world_height;
+			break;
+			
+		case 7:
+			x_coord = (x_coord+1) % Params.world_width;
+			y_coord = (y_coord+1) % Params.world_height;
 		}
 	}
 	
 	protected final void run(int direction) {
-		
+		energy += (Params.walk_energy_cost * 2);
+		energy -= Params.run_energy_cost;
+		walk(direction);
+		walk(direction);
 	}
 	
 	protected final void reproduce(Critter offspring, int direction) {
@@ -211,6 +265,8 @@ public abstract class Critter {
 	 */
 	public static void clearWorld() {
 		// Complete this method.
+		population.clear();
+		babies.clear();
 	}
 	
 	public static void worldTimeStep() {
@@ -219,11 +275,30 @@ public abstract class Critter {
 			population.get(p).energy -= Params.rest_energy_cost;
 			if(population.get(p).energy <= 0) {
 				population.remove(p);
+				p--;
 			}
 			population.get(p).doTimeStep();
 			if(population.get(p).energy <= 0) {
 				population.remove(p);
+				p--;
 			}
+		}
+		for (int p = 0; p < population.size(); p++) {
+			int check_x = population.get(p).x_coord;
+			int check_y = population.get(p).y_coord;
+			for (int q = p+1; q < population.size(); q++) {
+				if(check_x == population.get(q).x_coord && check_y == population.get(q).y_coord) {
+					
+				}
+			}
+		}
+	//Algae refresh time
+		for(int i = 0 ; i < Params.refresh_algae_count; i ++) {
+			Critter temp = new Algae();
+			temp.x_coord = getRandomInt(Params.world_width);
+			temp.y_coord = getRandomInt(Params.world_height);
+			temp.energy = Params.start_energy;
+			population.add(temp);
 		}
 	}
 	
@@ -263,5 +338,6 @@ public abstract class Critter {
 		}
 		System.out.print("+");
 		System.out.println();
+		runStats(population); //For testing
 	}
 }

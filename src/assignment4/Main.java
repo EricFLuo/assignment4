@@ -71,22 +71,60 @@ public class Main {
         /* Write your code below. */
         
          System.out.println("GLHF");
+         boolean quit = false;
+         while(!quit) {
         try {
-        	Critter.makeCritter("assignment4.Craig");
-        	Critter.makeCritter("assignment4.Algae");
-        	Critter.makeCritter("assignment4.Algae");
-        	Critter.makeCritter("assignment4.Algae");
-        	Critter.displayWorld();
-        	Critter.worldTimeStep();
-        	Critter.worldTimeStep();
-        	Critter.worldTimeStep();
-        	Critter.displayWorld();
+        	String cmd = kb.next();
+        	switch(cmd) {
+        	case "quit":
+        		quit = true;
+        		System.out.println("You have quit.");
+        		break;
+        		
+        	case "show":
+        		Critter.displayWorld();
+        		break;	
+        		
+        	case "step":
+        		int steps = 1;
+        		if(kb.hasNextInt()) {
+        			steps = kb.nextInt();
+        		}
+        		for(int i = 0; i < steps; i++) {
+        			Critter.worldTimeStep();
+        		}
+        		break;
+        		
+        	case "seed":
+        		int seed = kb.nextInt();
+        		Critter.setSeed(seed);
+        		break;
+        		
+        	case "make": //STAGE 1/2 NEED TO UPGRADE FOR STAGE 3
+        		for(int i = 0; i < 100 ; i ++) {
+        			Critter.makeCritter("assignment4.Algae");
+        		}
+        		for(int i = 0; i < 25 ; i ++) {
+        			Critter.makeCritter("assignment4.Craig");
+        		}
+        		break;
+        		
+        	case "stats":
+        		break;
+        	
+        	case "clear":
+        		Critter.clearWorld();
+        		System.out.println("World Cleared.");
+        	}
+        	
         } 
         catch(InvalidCritterException e) {
         	
         }
+    }
         /* Write your code above */
         System.out.flush();
 
     }
+    
 }
