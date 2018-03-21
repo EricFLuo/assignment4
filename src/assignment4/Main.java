@@ -12,8 +12,10 @@ package assignment4;
  * Fall 2016
  */
 
+import java.util.List;
 import java.util.Scanner;
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 
 
 /*
@@ -35,7 +37,7 @@ public class Main {
     static {
         myPackage = Critter.class.getPackage().toString().split(" ")[1];
     }
-
+    
     /**
      * Main method.
      * @param args args can be empty.  If not empty, provide two parameters -- the first is a file name, 
@@ -86,13 +88,26 @@ public class Main {
         		break;	
         		
         	case "step":
-        		int steps = 1;
-        		if(kb.hasNextInt()) {
-        			steps = kb.nextInt();
-        		}
-        		for(int i = 0; i < steps; i++) {
-        			Critter.worldTimeStep();
-        		}
+        		String in = kb.nextLine();
+				String[] total = in.split(" ");
+				
+				if(total.length == 1) {
+					Critter.worldTimeStep();
+				}
+				else if(total.length >2) {
+					System.out.println("error processing: " + cmd + in);
+					}
+				else {
+					try {
+						int steps = Integer.parseInt(total[1]);
+						for(int i = 0; i < steps; i++) {	
+							Critter.worldTimeStep();
+						}
+					}
+					catch(NumberFormatException e) {
+						System.out.println("error processing: " + cmd + in);
+					}
+				}
         		break;
         		
         	case "seed":
@@ -100,37 +115,79 @@ public class Main {
         		Critter.setSeed(seed);
         		break;
         		
-        	case "make": //STAGE 1/2 NEED TO UPGRADE FOR STAGE 3
-//        		for(int i = 0; i < 100 ; i ++) {
-//        			Critter.makeCritter("assignment4.Algae");
-//        		}
-//        		for(int i = 0; i < 25 ; i ++) {
-//        			Critter.makeCritter("assignment4.Craig");
-//        		}
-        		String class_name = kb.next();
-        		int amount = 1;
-        		if(kb.hasNextInt()	) {
-        			amount = kb.nextInt();
-        		}
-        		class_name = "assignment4."+ class_name;
-        		for(int i = 0; i < amount; i++) {
+        	case "make":
+				String class_name = kb.next();	
+				String input = kb.nextLine();
+				String[] list = input.split(" ");
+				if(list.length == 1) {
+        			class_name = "assignment4." + class_name;
         			Critter.makeCritter(class_name);
-        		}
+				}
+				else if(list.length >2) {
+					System.out.println("error processing: " + cmd + " " + class_name + input);
+					}
+				else {
+					try {
+						int amount = Integer.parseInt(list[1]);
+						class_name = "assignment4." + class_name;
+						for(int i = 0; i < amount; i++) {	
+		        			Critter.makeCritter(class_name);
+						}
+					}
+					catch(NumberFormatException e) {
+						System.out.println("error processing: " + cmd + " " + class_name + input);
+					}
+				}
         		break;
         		
         	case "stats":
+        		String line = kb.nextLine();
+        		String[] words = line.split(" ");
+        		
+        		if(words.length == 2) {
+        			List<Critter> stat_names = new java.util.ArrayList<Critter>();
+            		stat_names = Critter.getInstances(words[1]); 		
+            		if(words[1].equals("Algae")) {
+            			Algae.runStats(stat_names);
+            		}
+            		else if(words[1].equals("Craig")) {
+            			Craig.runStats(stat_names);
+            		}
+            		else if(words[1].equals("Critter1")) {
+            			Critter1.runStats(stat_names);
+            		}
+            		else if(words[1].equals("Critter2")) {
+            			Critter2.runStats(stat_names);
+            		}
+            		else {
+            			System.out.println("error processing: "+cmd +" "+ words[1]);
+            		}
+				}
+        		else if(words.length == 1){
+        			System.out.println("error processing: "+cmd);
+        		}
+				else {
+					System.out.println("error processing: "+cmd +" "+ words[1]);
+					}
+				
         		break;
         	
         	case "clear":
         		Critter.clearWorld();
         		System.out.println("World Cleared.");
+        		break;
+        	default:
+        		cmd += kb.nextLine();
+        		System.out.println("invalid command: "+ cmd);
+        		
         	}
         	
         } 
         catch(InvalidCritterException e) {
-        	
+        	System.out.println(e.toString());
         }
     }
+    
         /* Write your code above */
         System.out.flush();
 

@@ -22,6 +22,7 @@ import java.util.List;
 
 
 public abstract class Critter {
+
 	private static String myPackage;
 	private	static List<Critter> population = new java.util.ArrayList<Critter>();
 	private static List<Critter> babies = new java.util.ArrayList<Critter>();
@@ -49,84 +50,90 @@ public abstract class Critter {
 	
 	private int x_coord;
 	private int y_coord;
+	private boolean moved;
 	
-	protected final void walk(int direction) {
+	protected final void walk(int direction) {	
 		energy -= Params.walk_energy_cost;
-		switch(direction) {
-		case 0:
-			x_coord = (x_coord+1) % Params.world_width;
-			break;
-			
-		case 1:
-			x_coord = (x_coord+1) % Params.world_width;
-			if(y_coord == 0) {
-				y_coord = Params.world_height-1;
+		
+		if (!moved) {
+			moved = true;
+			switch (direction) {
+			case 0:
+				x_coord = (x_coord + 1) % Params.world_width;
+				break;
+
+			case 1:
+				x_coord = (x_coord + 1) % Params.world_width;
+				if (y_coord == 0) {
+					y_coord = Params.world_height - 1;
+				} else {
+					y_coord--;
+				}
+				break;
+
+			case 2:
+				if (y_coord == 0) {
+					y_coord = Params.world_height - 1;
+				} else {
+					y_coord--;
+				}
+				break;
+
+			case 3:
+				if (x_coord == 0) {
+					x_coord = Params.world_width - 1;
+				} else {
+					x_coord--;
+				}
+
+				if (y_coord == 0) {
+					y_coord = Params.world_height - 1;
+				} else {
+					y_coord--;
+				}
+				break;
+
+			case 4:
+				if (x_coord == 0) {
+					x_coord = Params.world_width - 1;
+				} else {
+					x_coord--;
+				}
+
+				break;
+
+			case 5:
+				if (x_coord == 0) {
+					x_coord = Params.world_width - 1;
+				} else {
+					x_coord--;
+				}
+				y_coord = (y_coord + 1) % Params.world_height;
+				break;
+
+			case 6:
+				y_coord = (y_coord + 1) % Params.world_height;
+				break;
+
+			case 7:
+				x_coord = (x_coord + 1) % Params.world_width;
+				y_coord = (y_coord + 1) % Params.world_height;
 			}
-			else {
-				y_coord--;
-			}
-			break;
-			
-		case 2:
-			if(y_coord == 0) {
-				y_coord = Params.world_height-1;
-			}
-			else {
-				y_coord--;
-			}
-			break;
-			
-		case 3:
-			if(x_coord == 0) {
-				x_coord = Params.world_width-1;
-			}
-			else { 
-				x_coord--;
-			}
-			
-			if(y_coord == 0) {
-				y_coord = Params.world_height-1;
-			}
-			else {
-				y_coord--;
-			}
-			break;
-			
-		case 4:
-			if(x_coord == 0) {
-				x_coord = Params.world_width-1;
-			}
-			else { 
-				x_coord--;
-			}
-			
-			break;
-			
-		case 5:
-			if(x_coord == 0) {
-				x_coord = Params.world_width-1;
-			}
-			else { 
-				x_coord--;
-			}
-			y_coord = (y_coord+1) % Params.world_height;
-			break;
-			
-		case 6:
-			y_coord = (y_coord+1) % Params.world_height;
-			break;
-			
-		case 7:
-			x_coord = (x_coord+1) % Params.world_width;
-			y_coord = (y_coord+1) % Params.world_height;
 		}
 	}
 	
 	protected final void run(int direction) {
-		energy += (Params.walk_energy_cost * 2);
-		energy -= Params.run_energy_cost;
-		walk(direction);
-		walk(direction);
+		if(moved) {
+			energy -= Params.run_energy_cost;
+		}
+		else {
+			energy += (Params.walk_energy_cost * 2);
+			energy -= Params.run_energy_cost;
+			walk(direction);
+			moved = false;
+			walk(direction);
+		}
+	
 	}
 	
 	protected final void reproduce(Critter offspring, int direction) {
@@ -232,7 +239,7 @@ public abstract class Critter {
 			critter.x_coord = getRandomInt(Params.world_width);
 			critter.y_coord = getRandomInt(Params.world_height);
 			critter.energy = Params.start_energy;
-			
+			critter.moved = false;
 			population.add(critter);
 			
 		}
@@ -256,8 +263,13 @@ public abstract class Critter {
 	 * @throws InvalidCritterException
 	 */
 	public static List<Critter> getInstances(String critter_class_name) throws InvalidCritterException {
+		String class_name = "assignment4."+critter_class_name;
 		List<Critter> result = new java.util.ArrayList<Critter>();
-	
+			for(Critter c: population) {
+				if(c.getClass().getName().equalsIgnoreCase(class_name)) {
+					result.add(c);
+				}
+			}
 		return result;
 	}
 	
@@ -405,6 +417,9 @@ public abstract class Critter {
 					}
 				}
 			}
+		}
+		for(Critter c: population) {
+			c.moved = false;
 		}
 		population.addAll(babies);
 		babies.clear();
