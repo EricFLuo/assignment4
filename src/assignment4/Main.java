@@ -72,19 +72,32 @@ public class Main {
         /* Do not alter the code above for your submission. */
         /* Write your code below. */
         
-         System.out.println("GLHF");
          boolean quit = false;
          while(!quit) {
         try {
         	String cmd = kb.next();
         	switch(cmd) {
         	case "quit":
+        		//String quitline = kb.nextLine();
+				//String[] quit_array = quitline.split(" ");
+				//if(quit_array.length == 1) {
         		quit = true;
-        		System.out.println("You have quit.");
+        		//}
+				//else {
+				//	System.out.println("error processing: " + cmd + quitline);
+				//}
+        		//System.out.println("You have quit.");
         		break;
         		
         	case "show":
+        		String showline = kb.nextLine();
+				String[] show_array = showline.split(" ");
+				if(show_array.length == 1) {
         		Critter.displayWorld();
+				}
+				else {
+					System.out.println("error processing: " + cmd + showline);
+				}
         		break;	
         		
         	case "step":
@@ -111,8 +124,26 @@ public class Main {
         		break;
         		
         	case "seed":
-        		int seed = kb.nextInt();
-        		Critter.setSeed(seed);
+        		String seedline = kb.nextLine();
+				String[] seed_array = seedline.split(" ");
+				
+				if(seed_array.length == 1) {
+					System.out.println("error processing: " + cmd + seedline);
+				}
+				else if(seed_array.length >2) {
+					System.out.println("error processing: " + cmd + seedline);
+					}
+				else {
+					try {
+						int seed = Integer.parseInt(seed_array[1]);
+						Critter.setSeed(seed);
+					}
+					catch(NumberFormatException e) {
+						System.out.println("error processing: " + cmd + seedline);
+					}
+				}
+				
+        		
         		break;
         		
         	case "make":
@@ -120,7 +151,6 @@ public class Main {
 				String input = kb.nextLine();
 				String[] list = input.split(" ");
 				if(list.length == 1) {
-        			class_name = "assignment4." + class_name;
         			Critter.makeCritter(class_name);
 				}
 				else if(list.length >2) {
@@ -129,7 +159,6 @@ public class Main {
 				else {
 					try {
 						int amount = Integer.parseInt(list[1]);
-						class_name = "assignment4." + class_name;
 						for(int i = 0; i < amount; i++) {	
 		        			Critter.makeCritter(class_name);
 						}

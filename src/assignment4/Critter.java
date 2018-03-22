@@ -232,6 +232,7 @@ public abstract class Critter {
 	@SuppressWarnings("deprecation")
 	public static void makeCritter(String critter_class_name) throws InvalidCritterException {
 		try {
+			critter_class_name = "assignment4." + critter_class_name;
 			Class<?> temp = Class.forName(critter_class_name);
 			
 			Critter critter = (Critter) temp.newInstance();
@@ -364,19 +365,23 @@ public abstract class Critter {
 			population.get(p).energy -= Params.rest_energy_cost;
 			if(population.get(p).energy <= 0) {
 				population.remove(p);
+				if(p > 0) {
 				p--;
+				}
 			}
 			population.get(p).doTimeStep();
 			if(population.get(p).energy <= 0) {
 				population.remove(p);
+				if(p > 0) {
 				p--;
+				}
 			}
 		}
 		for (int a = 0; a < population.size()-1; a++) {
 			int check_x = population.get(a).x_coord;
 			int check_y = population.get(a).y_coord;
 			
-			for (int b = a+1; b < population.size()-1; b++) {
+			for (int b = a+1; b < population.size(); b++) {
 				
 				if(check_x == population.get(b).x_coord && check_y == population.get(b).y_coord) {
 					
@@ -397,22 +402,34 @@ public abstract class Critter {
 						if(A_roll == B_roll) {
 							population.get(a).energy += (population.get(b).energy/2);
 							population.remove(b);
+							if(a > 0) {
 							a--;
+							}
+							if(b > 0) {
 							b--;
+							}
 						}
 						//A < B
 						else if(A_roll < B_roll) {
 							population.get(b).energy += (population.get(a).energy/2);
 							population.remove(a);
+							if(a > 0) {
 							a--;
+							}
+							if(b > 0) {
 							b--;
+							}
 						}
 						//A > B
 						else {
 							population.get(a).energy += (population.get(b).energy/2);
 							population.remove(b);
+							if(a >0) {
 							a--;
+							}
+							if(b >0) {
 							b--;
+							}
 						}
 					}
 				}
@@ -469,6 +486,6 @@ public abstract class Critter {
 		}
 		System.out.print("+");
 		System.out.println();
-		runStats(population); //For testing
+		//runStats(population); //For testing
 	}
 }
