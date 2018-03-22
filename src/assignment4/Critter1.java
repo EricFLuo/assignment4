@@ -8,9 +8,15 @@ public class Critter1 extends TestCritter{
 		heal = false;
 	}
 	@Override
+	/**
+	 * Critter's ASCII is '1'
+	 */
 	public String toString() {
 		return "1";
 	}
+	/**
+	 * Time step. Always run in a random direction, then every other other time step, it heals a certain amount. 
+	 */
 	public void doTimeStep() {
 		run(getRandomInt(8));
 		if(heal){
@@ -21,9 +27,10 @@ public class Critter1 extends TestCritter{
 			heal = true;
 		}
 	}
-	
+	/**
+	 * Never fight
+	 */
 	public boolean fight(String not_used) {
-		run(2);
 		return false;
 	}
 }

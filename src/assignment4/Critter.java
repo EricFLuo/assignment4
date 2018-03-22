@@ -33,26 +33,46 @@ public abstract class Critter {
 	}
 	
 	private static java.util.Random rand = new java.util.Random();
+	/**
+	 *  Returns a random number between 0 - Max
+	 * @param max the ceiling of the range of random numbers
+	 * @return the random integer between 0 - Max
+	 */
 	public static int getRandomInt(int max) {
 		return rand.nextInt(max);
 	}
-	
+	/**
+	 * Set the seed to a certain number to ensure the same randomness
+	 * @param new_seed the desired seed
+	 */
 	public static void setSeed(long new_seed) {
 		rand = new java.util.Random(new_seed);
 	}
 	
 	
 	/* a one-character long string that visually depicts your critter in the ASCII interface */
+	/**
+	 * Default output to display critter
+	 */
 	public String toString() { return ""; }
 	
 	private int energy = 0;
+	/**
+	 * Returns the energy of the critter
+	 * @return
+	 */
 	protected int getEnergy() { return energy; }
 	
 	private int x_coord;
 	private int y_coord;
 	private boolean moved;
-	
+	/**
+	 * Walks 1 step in a certain direction and subtracts the amount of energy used. If the critters energy drops to 
+	 * 0 or below, remove it.
+	 * @param direction
+	 */
 	protected final void walk(int direction) {	
+
 		energy -= Params.walk_energy_cost;
 		
 		if (!moved) {
@@ -121,7 +141,11 @@ public abstract class Critter {
 			}
 		}
 	}
-	
+	/**
+	 * Walks 2 step in a certain direction and subtracts the amount of energy used. If the critters energy drops to 
+	 * 0 or below, remove it.
+	 * @param direction
+	 */
 	protected final void run(int direction) {
 		if(moved) {
 			energy -= Params.run_energy_cost;
@@ -135,7 +159,12 @@ public abstract class Critter {
 		}
 	
 	}
-	
+	/**
+	 * Produces an offspring of the same subclass with half of the parent critters energy, and places it in a specific
+	 * direction away from the parent.
+	 * @param offspring
+	 * @param direction
+	 */
 	protected final void reproduce(Critter offspring, int direction) {
 		if(energy >= Params.min_reproduce_energy) {
 			offspring.energy = (energy/2);
@@ -215,8 +244,15 @@ public abstract class Critter {
 		}
 		return;
 	}
-
+	/**
+	 * Default time step for a generic critter
+	 */
 	public abstract void doTimeStep();
+	/**
+	 * Default fight protocol for a generic critter.
+	 * @param oponent the toString of the opponent
+	 * @return whether or not the critter wants to fight
+	 */
 	public abstract boolean fight(String oponent);
 	
 	/**
@@ -226,8 +262,8 @@ public abstract class Critter {
 	 * (Java weirdness: Exception throwing does not work properly if the parameter has lower-case instead of
 	 * upper. For example, if craig is supplied instead of Craig, an error is thrown instead of
 	 * an Exception.)
-	 * @param critter_class_name
-	 * @throws InvalidCritterException
+	 * @param critter_class_name name of the critter class as a unqualified name
+	 * @throws InvalidCritterException In case the critter input isn't a real critter
 	 */
 	@SuppressWarnings("deprecation")
 	public static void makeCritter(String critter_class_name) throws InvalidCritterException {
@@ -261,7 +297,7 @@ public abstract class Critter {
 	 * Gets a list of critters of a specific type.
 	 * @param critter_class_name What kind of Critter is to be listed.  Unqualified class name.
 	 * @return List of Critters.
-	 * @throws InvalidCritterException
+	 * @throws InvalidCritterException In case the critter input isn't a real critter
 	 */
 	public static List<Critter> getInstances(String critter_class_name) throws InvalidCritterException {
 		String class_name = "assignment4."+critter_class_name;
@@ -358,7 +394,10 @@ public abstract class Critter {
 		population.clear();
 		babies.clear();
 	}
-	
+	/**
+	 * Whenever this is called, all critters go through their individual time steps. Reproduction and fights are
+	 * resolved, and all dead critters are removed. 
+	 */
 	public static void worldTimeStep() {
 		// Complete this method.
 		for (int p = 0; p < population.size(); p++) {
@@ -451,7 +490,9 @@ public abstract class Critter {
 			population.add(temp);
 		}
 	}
-	
+	/**
+	 * Displays the 2D world with a border and ASCII characters representing each critter.
+	 */
 	public static void displayWorld() {
 		// Complete this method.
 		boolean spotfound = false;
