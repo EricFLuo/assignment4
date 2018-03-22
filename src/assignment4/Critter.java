@@ -368,6 +368,7 @@ public abstract class Critter {
 				if(p > 0) {
 				p--;
 				}
+				break;
 			}
 			population.get(p).doTimeStep();
 			if(population.get(p).energy <= 0) {
@@ -375,6 +376,7 @@ public abstract class Critter {
 				if(p > 0) {
 				p--;
 				}
+				break;
 			}
 		}
 		for (int a = 0; a < population.size()-1; a++) {
